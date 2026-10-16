@@ -1,0 +1,11 @@
+# Reproducible local production artifacts; retain small evidence and source scripts.
+**/__pycache__/
+*/renders/*
+!*/renders/*.py
+!*/renders/verification.md
+!*/renders/contact-sheet.png
+!*/renders/insert-contact.png
+!*/renders/*probe.json
+!*/renders/measurements.json
+*/public/*.wav
+*/public/*.mp4

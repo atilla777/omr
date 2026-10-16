@@ -1,0 +1,70 @@
+{
+  "skills": [
+    {
+      "name": "omr-requirements",
+      "location": "/tmp/opencode/omr-install-check/.opencode/skills/omr-requirements/SKILL.md"
+    },
+    {
+      "name": "omr-content",
+      "location": "/tmp/opencode/omr-install-check/.opencode/skills/omr-content/SKILL.md"
+    },
+    {
+      "name": "omr-script",
+      "location": "/tmp/opencode/omr-install-check/.opencode/skills/omr-script/SKILL.md"
+    },
+    {
+      "name": "omr-render",
+      "location": "/tmp/opencode/omr-install-check/.opencode/skills/omr-render/SKILL.md"
+    },
+    {
+      "name": "ris-port-op-interview",
+      "location": "/tmp/opencode/omr-install-check/.opencode/skills/ris-port-op-interview/SKILL.md"
+    },
+    {
+      "name": "ris-port-op-author-skill",
+      "location": "/tmp/opencode/omr-install-check/.opencode/skills/ris-port-op-author-skill/SKILL.md"
+    },
+    {
+      "name": "remotion-best-practices",
+      "location": "/tmp/opencode/omr-install-check/.opencode/skills/remotion-best-practices/SKILL.md"
+    },
+    {
+      "name": "manim",
+      "location": "/home/aleksei/.config/opencode/skills/manim-community-pack/skills/manim/SKILL.md"
+    },
+    {
+      "name": "manim-local",
+      "location": "/home/aleksei/.config/opencode/skills/manim-local/SKILL.md"
+    }
+  ],
+  "commands": {
+    "omr-requirements": {
+      "description": "Собрать или уточнить требования к ролику OMR и согласовать движок в адаптивном интервью.",
+      "template": "Загрузи скил `omr-requirements` через инструмент skill и выполни запрос по его\nинструкциям, включая загрузку `ris-port-op-interview`. Если скил недоступен,\nсообщи об этом пользователю. Результат этапа — `requirements.md` выбранного\nролика; следующие этапы автоматически не запускай, движки не устанавливай.\n\nЗапрос пользователя:\n$ARGUMENTS\n\nЕсли аргументов нет, используй текущий контекст и материалы; сначала установи\nпроект по правилам скила, затем выясни первый существенный неизвестный пункт."
+    },
+    "omr-content": {
+      "description": "Собрать и проверить материалы для ролика OMR с источниками и обязательным content/index.md.",
+      "template": "Загрузи скил `omr-content` через инструмент skill и выполни запрос по его\nинструкциям. Если скил недоступен, сообщи об этом пользователю. Результат —\n`content/index.md` и тематические материалы выбранного ролика. Предыдущий\nи следующие этапы автоматически не запускай, движки не устанавливай.\n\nЗапрос пользователя:\n$ARGUMENTS\n\nЕсли аргументов нет, используй текущий контекст и материалы; сначала установи\nпроект и проверь достаточность требований по правилам скила."
+    },
+    "omr-script": {
+      "description": "Создать или отредактировать script.md ролика OMR со сценами, таймингом, текстами, звуком и заданием для выбранных движков.",
+      "template": "Загрузи скил `omr-script` через инструмент skill и выполни запрос по его\nинструкциям. Если скил недоступен, сообщи об этом пользователю. Результат —\n`script.md` выбранного ролика. Предыдущие и следующие этапы автоматически\nне запускай, движки не устанавливай и производство не начинай.\n\nЗапрос пользователя:\n$ARGUMENTS\n\nЕсли аргументов нет, используй текущий контекст и материалы; сначала установи\nпроект и проверь достаточность требований и контента по правилам скила."
+    },
+    "omr-render": {
+      "description": "Реализовать сценарий OMR, подготовить медиа и получить проверенный MP4 на Remotion, Manim или гибриде.",
+      "template": "Загрузи скил `omr-render` через инструмент `skill` и выполни производственный этап\nв выбранном проекте по его инструкциям. Это явное поручение получить `out/video.mp4`.\nУчитывай текущие материалы и аргументы пользователя:\n\n$ARGUMENTS"
+    },
+    "ris-port-op-interview": {
+      "description": "Провести интервью по ограниченной теме с деревом зависимых решений.",
+      "template": "Загрузи скил `ris-port-op-interview` через инструмент skill и следуй его инструкциям для выполнения запроса ниже. Если скил недоступен, сообщи об этом пользователю.\n\nЗапрос пользователя:\n$ARGUMENTS\n\nЕсли тема или границы интервью не заданы, начни с одного уточняющего вопроса согласно скилу."
+    },
+    "ris-port-op-author-skill": {
+      "description": "Создать или улучшить скил по проработанным требованиям.",
+      "template": "Загрузи скил `ris-port-op-author-skill` через инструмент skill и следуй его инструкциям для выполнения запроса ниже. Если скил недоступен, сообщи об этом пользователю.\n\nЗапрос пользователя:\n$ARGUMENTS\n\nЕсли необходимых требований не хватает, уточни недостающие данные согласно скилу."
+    },
+    "owner-status": {
+      "description": "Пользовательская команда; сохранить без изменений",
+      "template": "Ответь: «Правила владельца действуют»."
+    }
+  }
+}

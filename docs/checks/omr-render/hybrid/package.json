@@ -1,0 +1,16 @@
+{
+  "name": "omr-hybrid-check",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "render": "remotion render src/remotion/index.tsx Hybrid out/video.mp4 --codec=h264 --crf=18 --audio-codec=aac --audio-bitrate=192k --concurrency=2 --browser-executable=/usr/bin/chromium",
+    "build": "remotion bundle src/remotion/index.tsx --out-dir=renders/bundle"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.536",
+    "@remotion/media": "4.0.536",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "remotion": "4.0.536"
+  }
+}

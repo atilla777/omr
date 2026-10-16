@@ -1,0 +1,27 @@
+{
+  "assertions": "passed",
+  "video_sha256": "43128e6b29333f8cbd7af06131919d3932d3ea277f7c3373ad6a87fb63e2a69b",
+  "changed_after_content_edit": [
+    "demo/content/index.md"
+  ],
+  "preserved_owner_files": true,
+  "independent_ffprobe": {
+    "codec": "h264",
+    "width": 640,
+    "height": 360,
+    "fps": "30/1",
+    "frames": 120,
+    "seconds": 4,
+    "audio_streams": 0
+  },
+  "full_decode": "passed",
+  "documentation_checks": {
+    "markdown_files": 65,
+    "local_links": 138,
+    "broken_local_links": 0,
+    "skill_command_metadata": "passed",
+    "python_ast": "passed",
+    "saved_owner_hashes": "passed",
+    "git_diff_check": "passed"
+  }
+}
