@@ -1,4 +1,4 @@
-# OMR — Oh My Remotion
+# OMR — Oh My Reels
 
 Набор скилов и команд OpenCode для создания видеороликов: от обсуждения идеи
 до проверенного MP4 на Remotion, Manim или их комбинации.
