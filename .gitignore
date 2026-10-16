@@ -8,3 +8,6 @@ out
 
 # Downloaded upstream dependency; provenance and pinned installer are tracked.
 /.opencode/skills/remotion-best-practices/
+
+# Local video projects are not part of the OMR publication.
+/projects/
