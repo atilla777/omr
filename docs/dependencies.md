@@ -1,5 +1,60 @@
 # Технические зависимости OMR
 
+## База и зависимости по режимам
+
+Установка OMR копирует скилы/команды, но не устанавливает автоматически движки,
+системные пакеты, TTS или модели alignment. Проверяй применимые зависимости до
+работы, установку отсутствующего ПО согласуй. Не устанавливай всё из таблицы
+немому ролику или проекту только на одном движке.
+
+| Зависимость | Когда и как подключать | Официальный источник установки |
+|---|---|---|
+| OpenCode | Для скилов/команд; `/omr` дополнительно требует делегирование и разрешения субагентов | [OpenCode V2](https://opencode.ai/v2/docs/) |
+| Git | Для получения исходников и рабочей области; без вложенного `.git` ролика | [Git downloads](https://git-scm.com/downloads) |
+| Python 3 и HTTPS | Для `scripts/install-remotion-skills.py`; стандартная библиотека, без pip-зависимостей | [Python downloads](https://www.python.org/downloads/) |
+| FFmpeg и FFprobe | CLI в PATH для проверки всех MP4, а при звуке — анализа/сведения; встроенный бинарник движка не заменяет эту проверку | [FFmpeg download](https://ffmpeg.org/download.html), [FFprobe](https://ffmpeg.org/ffprobe.html) |
+| Node.js / npm | Только Remotion/гибрид, до установки локальных пакетов; совместимость сверять с выбранной версией Remotion | [Node.js](https://nodejs.org/en/download), [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) |
+| React, Remotion и CLI | Только в папке ролика, совместимые точные версии и lock-файл; непустую папку с Markdown не затирать шаблоном | [Remotion installation](https://www.remotion.dev/docs/), [existing project](https://www.remotion.dev/docs/brownfield) |
+| Браузер Remotion и библиотеки ОС | Из локального проекта с установленным CLI: `npx remotion browser ensure`; скачивание согласовать. Linux-пакеты зависят от ОС | [Browser ensure](https://www.remotion.dev/docs/cli/browser/ensure), [Linux dependencies](https://www.remotion.dev/docs/miscellaneous/linux-dependencies) |
+| Manim CE, Python и библиотеки Cairo/Pango и др. | Только Manim/гибрид; использовать подходящее имеющееся окружение либо изолированное окружение проекта. Требования Python/ОС сверять с выбранной версией | [Manim installation](https://docs.manim.community/en/stable/installation.html), [local installation with uv](https://docs.manim.community/en/stable/installation/uv.html) |
+| uv | Если выбран для окружения Manim/других Python-инструментов; не обязательный пакет Remotion | [uv installation](https://docs.astral.sh/uv/getting-started/installation/) |
+| Шрифты | Все режимы с текстом: реальные файлы, нужный язык, начертания, лицензия; не доверять одному fallback имени | Например, [Noto fonts](https://notofonts.github.io/) |
+| TeX + dvisvgm или Typst-путь | Только при соответствующих формулах. Для Manim Typst проверь extra/модуль и API выбранной версии; Typst CLI не всегда требуется | [Manim text](https://docs.manim.community/en/stable/guides/using_text.html), [TeX Live](https://tug.org/texlive/), [dvisvgm](https://dvisvgm.de/), [Manim Typst](https://docs.manim.community/en/stable/reference/manim.mobject.text.typst_mobject.html), [Typst installation](https://github.com/typst/typst#installation) |
+| Средство просмотра/прослушивания | Для проверки движения и звука; нужен реальный слушатель, если агент не воспринимает аудио | [mpv](https://mpv.io/installation/), [ffplay](https://ffmpeg.org/ffplay.html) или доступный аналог |
+| TTS | Только при порученной генерации; инструмент/провайдер выбирается проектом, не входит в обязательную базу OMR | Инструкция выбранного поставщика; никаких универсальных Qwen-путей или параметров |
+| ASR / forced alignment | Только для соответствующих субтитров/синхронизации; проверить до производства, модель, язык, лицензии, CPU/GPU, приватность; отдельное окружение с версиями | Примеры: [Stable-ts](https://github.com/jianfch/stable-ts#installation), [WhisperX](https://github.com/m-bain/whisperX#setup), [Whisper](https://github.com/openai/whisper#setup); выбрать нужное, не ставить всё |
+
+Лицензии движков, FFmpeg-сборки, шрифтов, моделей и медиа независимы от MIT OMR.
+Официальная страница FFmpeg публикует исходники и ссылки на сторонние готовые
+сборки; выбирай пакет для фактической ОС, а не случайный download-сайт.
+SoX, Rubber Band, ffmpeg-normalize, облачная обработка и конкретный TTS не нужны
+для базового процесса `omr-audio`.
+
+### Проверка FFmpeg
+
+```sh
+ffmpeg -version
+ffprobe -version
+ffmpeg -hide_banner -filters
+ffmpeg -hide_banner -encoders
+ffmpeg -hide_banner -h filter=loudnorm
+```
+
+Для `omr-audio` проверь `ebur128` (с `peak=true`), `astats`, `silencedetect`,
+`volume`, `acompressor`, `afade`, `aresample`, `loudnorm`, кодировщик `pcm_f32le`
+и выбранный доставочный кодек (обычно `aac`). Для H.264-производства проверь
+кодировщик выбранного движка; для прямых FFmpeg-команд с `libx264` нужен именно он.
+`alimiter`, `dynaudnorm`, `speechnorm`, `amix`, `sidechaincompress`, `rubberband`
+проверяй только при использовании: наличие и опции зависят от сборки.
+Одной строки версии недостаточно: выполни анализ короткого файла и проверь
+результат. Примеры — в `omr-audio/references/ffmpeg.md` внутри установленного скила.
+Официальная справка: [filters](https://ffmpeg.org/ffmpeg-filters.html).
+
+Локальная проверка 19 октября 2026: CLI FFmpeg/FFprobe доступны, FFmpeg `n9.0.1`;
+все перечисленные базовые фильтры найдены. Проверки команд и ограничения —
+в [отчёте по аудио](audio-verification.md). Это снимок машины, не гарантия будущей
+установки и не требование ровно этой версии. Проверяй заново при переносе.
+
 ## Официальные Remotion Agent Skills
 
 - Источник: https://github.com/remotion-dev/skills.
@@ -50,6 +105,7 @@ python3 scripts/install-remotion-skills.py --workspace /path/to/workspace
 | Зависимость | Размещение и назначение |
 |---|---|
 | `omr-dialogue` | Локально в `.opencode/skills/`; обязательные общие правила диалога всех скилов OMR, загрузка через `skill` в каждом контексте |
+| `omr-audio` | Входит в OMR, вместе с `references/ffmpeg.md`; обработка готовых файлов на FFmpeg. Производство и ревью звука явно загружают через `skill`; отдельной команды и TTS-зависимости нет |
 | `ris-port-op-interview` | Локально в `.opencode/skills/`; метод интервью |
 | `ris-port-op-author-skill` | Локально в `.opencode/skills/`; создание скилов OMR |
 | `manim` | На текущей машине — пользовательский набор iart-ai/manim-skills |
@@ -60,10 +116,18 @@ RIS-скилы включены под MIT OMR с разрешения влад�
 согласуйте подключение `manim` и подготовку `manim-local` под реальное окружение.
 Не переносите абсолютные пути и сведения об установленном ПО как проверенные факты.
 
+Общий `manim` на текущей машине происходит из сообщества
+[iart-ai/manim-skills](https://github.com/iart-ai/manim-skills), это **не официальный
+пакет Manim Community**. Перед подключением проверь актуальные файлы/лицензию
+источника и обнаружение нужного ID `manim`; установка движка не устанавливает скил.
+`manim-local` — пользовательская инструкция, не скачиваемая зависимость:
+подготовь её под проверенное окружение целевой машины. Отсутствие готового
+локального скила нельзя скрыть копированием путей автора.
+
 `omr-dialogue` — локальная адаптация
 [правил диалога RIS](https://github.com/atilla777/ris/blob/main/skills/ris-proj-lib-common/references/dialogue.md).
 Он не требует `ris-proj-lib-common` или доступа к upstream во время интервью.
-Все шесть скилов OMR явно загружают его через `skill`; автоматических импортов нет.
+Все семь скилов-потребителей OMR явно загружают его через `skill`; автоматических импортов нет.
 Для выбора используется доступный `question`, иначе — нумерованные текстовые
 варианты. Отдельной команды у зависимости нет: она не запускает этап или интервью.
 
@@ -78,7 +142,7 @@ TeX в `manim-local` не заменяет проверку текущей ма�
 
 ## Формат команд и обнаружение
 
-Целевая проверенная версия — OpenCode `1.18.33`. Формат четырёх команд:
+Первоначальная сквозная проверка выполнена на OpenCode `1.18.33`. Формат четырёх команд:
 `.opencode/commands/omr-<этап>.md`, YAML frontmatter с `description`, тело —
 инструкция загрузить одноимённый скил через `skill` и передать `$ARGUMENTS`.
 Используется текущий агент без закреплённой модели и без `subtask`.
@@ -94,19 +158,27 @@ TeX в `manim-local` не заменяет проверку текущей ма�
 Имена этапов: `requirements`, `content`, `script`, `render`.
 Файлы команд создаются только вместе с реализацией соответствующего скила.
 
-Источники: [команды OpenCode](https://opencode.ai/docs/commands/),
-[обнаружение скилов](https://opencode.ai/docs/skills/#understand-discovery).
+Текущие источники V2: [команды OpenCode](https://opencode.ai/v2/docs/commands),
+[обнаружение скилов](https://opencode.ai/v2/docs/skills).
+Ниже и в предыдущих отчётах `1.18.33` — историческая проверенная CLI, не требование
+отката. Проверяй доступность диагностических команд по справке установленной
+версии; отсутствие старой `debug`-команды само по себе не означает отсутствия скила.
 Результаты исходной проверки механизма записаны в задаче 2 `TODO.md`,
 полная установка и вызовы из отдельной области — в [сквозном отчёте](checks/omr-workflow.md).
-`opencode debug skill` показывает доступные скилы с содержимым,
+В той исторической CLI `opencode debug skill` показывал доступные скилы с содержимым,
 `opencode debug config` — распознанные команды с шаблонами.
-Эти команды проверяют обнаружение и чтение конфигурации, но не выполнение
-предметной работы агентом. Реальные вызовы четырёх команд проверены отдельно
+В локальной V2 `2.0.32` подкоманды `debug skill` нет, а `debug config` показывает
+источники конфигурации. Для текущей установки проверяй загрузку через `skill` в
+новой сессии из подпапки и наличие команд в интерфейсе; сверяй синтаксис со справкой
+и [документацией V2](https://opencode.ai/v2/docs/skills).
+Обнаружение не подтверждает предметное выполнение. Реальные вызовы четырёх команд проверены отдельно
 и в последовательной передаче материалов; ограничения записаны в отчётах.
 
 В `1.18.33` большой вывод `debug skill` при прямой передаче в pipe оказался
 обрезан (неполный JSON). Для автоматической проверки на этой Linux-машине
 использован псевдотерминал: `script -q -c 'opencode debug skill' /dev/null`;
 перед JSON-разбором удаляются символы `\r`. Это особенность диагностического
-вывода, а не отсутствие скилов. В уже запущенной до установки сессии новый скил
-через `skill` не виден до перезапуска.
+вывода той версии, а не отсутствие скилов. В исторической проверке уже запущенная
+сессия не видела новый скил до перезапуска. В текущей V2 `omr-audio` обнаружен и
+загружен через `skill` без перезапуска, но при установке всё равно проверяй новую
+сессию: не обещай одинаковое обновление списка всем клиентам.
